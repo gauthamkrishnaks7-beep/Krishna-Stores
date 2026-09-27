@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Krishna Stores | Owner Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: .8;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      background: #fff;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .login-box,
+    .panel {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    }
+
+    .login-box {
+      max-width: 450px;
+      margin: 60px auto;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+    }
+
+    .primary-btn {
+      background: #111;
+      color: white;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .secondary-btn {
+      background: #eee;
+      color: #222;
+    }
+
+    .danger-btn {
+      background: #e53935;
+      color: white;
+    }
+
+    .success-btn {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .warning-btn {
+      background: #f9a825;
+      color: #111;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .message.error {
+      display: block;
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .message.success {
+      display: block;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+    }
+
+    .preview {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #eee;
+      display: none;
+      margin-top: 10px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .product-card {
+      border: 1px solid #eee;
+      border-radius: 14px;
+      padding: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      background: #fff;
+    }
+
+    .product-image {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #eee;
+      flex-shrink: 0;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-info h3 {
+      margin: 0 0 5px;
+    }
+
+    .product-info p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .available {
+      color: #2e7d32 !important;
+      font-weight: bold;
+    }
+
+    .unavailable {
+      color: #c62828 !important;
+      font-weight: bold;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .actions button {
+      font-size: 13px;
+      padding: 9px 11px;
+    }
+
+    .order-card {
+      border: 1px solid #eee;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 15px;
+      background: #fff;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .order-number {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .status {
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #eee;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .order-details {
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .order-items {
+      background: #f7f7f7;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .status-buttons {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 700px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .product-card {
+        align-items: flex-start;
+      }
+
+      .product-image {
+        width: 75px;
+        height: 75px;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      header h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>🏪 Krishna Stores</h1>
+    <p>Owner Dashboard</p>
+  </div>
+
+  <button class="logout-btn" onclick="logout()">
+    Logout
+  </button>
+</header>
+
+<!-- LOGIN -->
+<div id="loginSection" class="container">
+
+  <div class="login-box">
+
+    <h2>🔐 Owner Login</h2>
+
+    <label>Email</label>
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Owner email"
+    >
+
+    <label>Password</label>
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
+
+    <button
+      class="primary-btn"
+      onclick="login()"
+    >
+      Login
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+  </div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="container">
+
+  <!-- PRODUCT FORM -->
+  <div class="panel">
+
+    <h2 id="formTitle">➕ Add Product</h2>
+
+    <input type="hidden" id="editProductId">
+
+    <div class="form-grid">
+
+      <div>
+        <label>Product Name</label>
+        <input
+          type="text"
+          id="productName"
+          placeholder="Example: Tomato"
+        >
+      </div>
+
+      <div>
+        <label>Malayalam Name</label>
+        <input
+          type="text"
+          id="productMalayalam"
+          placeholder="Example: തക്കാളി"
+        >
+      </div>
+
+      <div>
+        <label>Category</label>
+        <select id="productCategory">
+          <option value="Vegetables">🥦 Vegetables</option>
+          <option value="Grocery">🛒 Grocery</option>
+          <option value="Stationery">✏️ Stationery</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Unit Type</label>
+        <select id="unitType">
+          <option value="piece">Piece</option>
+          <option value="weight">Weight</option>
+          <option value="volume">Volume</option>
+        </select>
+      </div>
+
+      <div class="full">
+
+        <label>
+          Unit Options
+        </label>
+
+        <input
+          type="text"
+          id="unitOptions"
+          placeholder="Example: 100 g, 250 g, 500 g, 1 kg"
+        >
+
+        <small>
+          Separate options using commas.
+        </small>
+
+      </div>
+
+      <div class="full">
+
+        <label>Product Image</label>
+
+        <input
+          type="file"
+          id="productImage"
+          accept="image/jpeg,image/png,image/webp"
+          onchange="previewImage(event)"
+        >
+
+        <img
+          id="imagePreview"
+          class="preview"
+          alt="Preview"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="checkbox-row">
+
+      <input
+        type="checkbox"
+        id="productAvailable"
+        checked
+      >
+
+      <label for="productAvailable">
+        Product Available
+      </label>
+
+    </div>
+
+    <button
+      class="primary-btn"
+      onclick="saveProduct()"
+      id="saveProductButton"
+    >
+      Add Product
+    </button>
+
+    <button
+      class="secondary-btn hidden"
+      onclick="cancelEdit()"
+      id="cancelEditButton"
+    >
+      Cancel Edit
+    </button>
+
+    <div id="productMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- PRODUCTS -->
+  <div class="panel">
+
+    <h2>📦 Manage Products</h2>
+
+    <div class="search-row">
+
+      <input
+        type="search"
+        id="productSearch"
+        placeholder="Search product..."
+        oninput="renderProducts()"
+      >
+
+      <select
+        id="productFilter"
+        onchange="renderProducts()"
+      >
+        <option value="all">All Categories</option>
+        <option value="Vegetables">Vegetables</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Stationery">Stationery</option>
+      </select>
+
+    </div>
+
+    <div
+      id="productList"
+      class="product-list"
+    ></div>
+
+  </div>
+
+
+  <!-- ORDERS -->
+  <div class="panel">
+
+    <h2>🛍️ Customer Orders</h2>
+
+    <button
+      class="secondary-btn"
+      onclick="loadOrders()"
+    >
+      🔄 Refresh Orders
+    </button>
+
+    <div
+      id="ordersList"
+      style="margin-top:15px;"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./dashboard.js?v=20"></script>
+
+</body>
+</html>
