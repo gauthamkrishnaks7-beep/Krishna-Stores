@@ -1,0 +1,3873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Krishna Stores - Owner Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #e5e7eb
+        );
+}
+
+.login-box {
+
+    width: 100%;
+    max-width: 430px;
+
+    background: white;
+
+    padding: 32px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.10);
+}
+
+.login-logo {
+
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 18px;
+
+    background: #111827;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+
+    font-weight: 800;
+}
+
+.login-box h1 {
+
+    text-align: center;
+
+    margin: 0 0 8px;
+
+    font-size: 27px;
+}
+
+.login-box > p {
+
+    text-align: center;
+
+    color: #6b7280;
+
+    margin: 0 0 25px;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+input,
+select {
+
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: white;
+
+    font-size: 15px;
+}
+
+input:focus,
+select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.10);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-btn {
+
+    width: 100%;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    padding: 13px 18px;
+
+    background: #111827;
+
+    color: white;
+
+    font-weight: 700;
+
+    font-size: 15px;
+}
+
+.primary-btn:hover {
+    background: #000;
+}
+
+.secondary-btn {
+
+    border: 0;
+
+    border-radius: 9px;
+
+    padding: 10px 14px;
+
+    background: #eef2f7;
+
+    color: #111827;
+
+    font-weight: 700;
+}
+
+.secondary-btn:hover {
+    background: #e2e8f0;
+}
+
+.logout-btn {
+
+    border: 0;
+
+    border-radius: 8px;
+
+    padding: 9px 14px;
+
+    background: #374151;
+
+    color: white;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+#dashboard {
+    display: none;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px 25px;
+
+    background: #111827;
+
+    color: white;
+}
+
+.brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.brand-icon {
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: #111827;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 900;
+}
+
+.brand h1 {
+
+    margin: 0;
+
+    font-size: 19px;
+}
+
+.brand span {
+
+    color: #cbd5e1;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+
+    width: 100%;
+
+    max-width: 1250px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+
+    display: none;
+
+    margin-bottom: 15px;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    white-space: pre-line;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.success {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.message.error {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.stat-card {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0,0,0,.05);
+}
+
+.stat-label {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+.stat-value {
+
+    margin-top: 7px;
+
+    font-size: 28px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.section {
+
+    margin-bottom: 25px;
+
+    padding: 22px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0,0,0,.05);
+}
+
+.section-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+}
+
+.section-header p {
+
+    margin: 5px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   PRODUCT FORM
+========================================================= */
+
+.product-form {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+
+    display: flex;
+
+    gap: 10px;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
+
+.image-upload-box {
+
+    padding: 18px;
+
+    border:
+        2px dashed
+        #cbd5e1;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+}
+
+.image-upload-box input[type="file"] {
+
+    border: 0;
+
+    padding: 8px 0;
+
+    background: transparent;
+}
+
+.image-preview-wrapper {
+
+    display: none;
+
+    margin-top: 15px;
+}
+
+.image-preview-wrapper.show {
+    display: block;
+}
+
+.image-preview {
+
+    width: 150px;
+    height: 150px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    border: 1px solid #d1d5db;
+
+    background: #eee;
+}
+
+.current-image-text {
+
+    margin-top: 8px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.search-box {
+    margin-bottom: 18px;
+}
+
+.products-list {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.product-card {
+
+    display: flex;
+
+    gap: 14px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        #e5e7eb;
+
+    border-radius: 14px;
+
+    background: white;
+}
+
+.product-image {
+
+    width: 105px;
+    height: 105px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 11px;
+
+    background: #f1f5f9;
+}
+
+.product-info {
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+.product-name {
+
+    margin-bottom: 3px;
+
+    font-size: 17px;
+
+    font-weight: 800;
+}
+
+.product-malayalam {
+
+    margin-bottom: 7px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.product-meta {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+.status {
+
+    display: inline-block;
+
+    margin-top: 6px;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.status.available {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.status.unavailable {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+.product-actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 12px;
+}
+
+.edit-btn {
+
+    padding: 8px 11px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #e0e7ff;
+
+    color: #3730a3;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+.toggle-btn {
+
+    padding: 8px 11px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+.orders-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.order-card {
+
+    padding: 16px;
+
+    border:
+        1px solid
+        #e5e7eb;
+
+    border-radius: 14px;
+}
+
+.order-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.order-number {
+
+    font-size: 17px;
+
+    font-weight: 800;
+}
+
+.order-date {
+
+    margin-top: 4px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+.order-details {
+
+    margin-top: 13px;
+
+    padding: 13px;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+.order-items {
+
+    margin-top: 10px;
+
+    padding-left: 20px;
+}
+
+.order-bottom {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 13px;
+}
+
+.order-status-select {
+
+    width: auto;
+
+    min-width: 160px;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty {
+
+    padding: 35px 15px;
+
+    text-align: center;
+
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .stats {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .products-list {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .topbar {
+        padding: 13px 15px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .section {
+        padding: 16px;
+    }
+
+    .product-form {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .product-card {
+        padding: 11px;
+    }
+
+    .product-image {
+
+        width: 85px;
+        height: 85px;
+    }
+
+    .order-bottom {
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .order-status-select {
+
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .brand h1 {
+        font-size: 16px;
+    }
+
+    .stats {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-value {
+        font-size: 23px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     LOGIN PAGE
+========================================================= -->
+
+<div
+    id="loginPage"
+    class="login-page"
+>
+
+    <div class="login-box">
+
+        <div class="login-logo">
+            KS
+        </div>
+
+
+        <h1>
+            Krishna Stores
+        </h1>
+
+
+        <p>
+            Owner Dashboard
+        </p>
+
+
+        <div
+            id="loginMessage"
+            class="message"
+        ></div>
+
+
+        <form id="loginForm">
+
+
+            <div class="form-group">
+
+                <label for="loginEmail">
+                    Email
+                </label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    placeholder="Owner email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="loginPassword">
+                    Password
+                </label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                id="loginButton"
+                type="submit"
+                class="primary-btn"
+            >
+                Login
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
+
+<div id="dashboard">
+
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+
+        <div class="brand">
+
+
+            <div class="brand-icon">
+                KS
+            </div>
+
+
+            <div>
+
+                <h1>
+                    Krishna Stores
+                </h1>
+
+                <span>
+                    Owner Dashboard
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            class="logout-btn"
+            onclick="logoutOwner()"
+        >
+            Logout
+        </button>
+
+
+    </header>
+
+
+
+    <main class="container">
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="dashboardMessage"
+            class="message"
+        ></div>
+
+
+
+        <!-- =====================================================
+             STATS
+        ====================================================== -->
+
+        <div class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Products
+                </div>
+
+                <div
+                    id="totalProducts"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Available
+                </div>
+
+                <div
+                    id="availableProducts"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Orders
+                </div>
+
+                <div
+                    id="totalOrders"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Preparing
+                </div>
+
+                <div
+                    id="preparingOrders"
+                    class="stat-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+             ADD / EDIT PRODUCT
+        ====================================================== -->
+
+        <section class="section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 id="productFormTitle">
+                        Add Product
+                    </h2>
+
+                    <p>
+                        Add a product or edit an existing product.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <form
+                id="productForm"
+                class="product-form"
+            >
+
+
+                <!-- PRODUCT ID -->
+
+                <input
+                    id="editingProductId"
+                    type="hidden"
+                    value=""
+                >
+
+
+
+                <!-- PRODUCT NAME -->
+
+                <div class="form-group">
+
+                    <label for="productName">
+                        Product Name
+                    </label>
+
+                    <input
+                        id="productName"
+                        type="text"
+                        placeholder="Example: Tomato"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- MALAYALAM NAME -->
+
+                <div class="form-group">
+
+                    <label for="productMalayalam">
+                        Malayalam Name
+                    </label>
+
+                    <input
+                        id="productMalayalam"
+                        type="text"
+                        placeholder="ഉദാ: തക്കാളി"
+                    >
+
+                </div>
+
+
+
+                <!-- CATEGORY -->
+
+                <div class="form-group">
+
+                    <label for="productCategory">
+                        Category
+                    </label>
+
+                    <select
+                        id="productCategory"
+                        required
+                    >
+
+                        <option value="">
+                            Select category
+                        </option>
+
+                        <option value="Vegetables">
+                            Vegetables
+                        </option>
+
+                        <option value="Grocery">
+                            Grocery
+                        </option>
+
+                        <option value="Stationery">
+                            Stationery
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- UNIT -->
+
+                <div class="form-group">
+
+                    <label for="productUnit">
+                        Unit
+                    </label>
+
+                    <input
+                        id="productUnit"
+                        type="text"
+                        placeholder="kg / piece / packet"
+                    >
+
+                </div>
+
+
+
+                <!-- IMAGE -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Product Image
+                    </label>
+
+
+                    <div class="image-upload-box">
+
+
+                        <input
+                            id="productImageFile"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                        >
+
+
+                        <div
+                            id="imagePreviewWrapper"
+                            class="image-preview-wrapper"
+                        >
+
+                            <img
+                                id="imagePreview"
+                                class="image-preview"
+                                alt="Product image preview"
+                            >
+
+
+                            <div
+                                id="currentImageText"
+                                class="current-image-text"
+                            >
+                                Current image
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="form-actions full">
+
+
+                    <button
+                        id="saveProductButton"
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Add Product
+                    </button>
+
+
+                    <button
+                        id="cancelEditButton"
+                        type="button"
+                        class="secondary-btn"
+                        onclick="resetProductForm()"
+                        style="display:none;"
+                    >
+                        Cancel Edit
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             PRODUCTS
+        ====================================================== -->
+
+        <section class="section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Products
+                    </h2>
+
+                    <p>
+                        Manage your store products.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="search-box">
+
+                <input
+                    id="productSearch"
+                    type="search"
+                    placeholder="Search products..."
+                >
+
+            </div>
+
+
+
+            <div
+                id="productsList"
+                class="products-list"
+            >
+
+                <div class="empty">
+                    Loading products...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             ORDERS
+        ====================================================== -->
+
+        <section class="section">
+
+
+            <div class="section-header">
+
+
+                <div>
+
+                    <h2>
+                        Customer Orders
+                    </h2>
+
+                    <p>
+                        Manage pickup orders.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="loadOrders()"
+                >
+                    Refresh
+                </button>
+
+
+            </div>
+
+
+
+            <div
+                id="ordersList"
+                class="orders-list"
+            >
+
+                <div class="empty">
+                    Loading orders...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+/* ============================================================
+   SUPABASE
+============================================================ */
+
+const SUPABASE_URL =
+    "https://bbmyoedamaubumrgpmwj.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable_YxgTwZJdKcOreql6A5Un3Q_ErxOJuuV";
+
+
+const STORAGE_BUCKET =
+    "product-images";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/* ============================================================
+   GLOBAL DATA
+============================================================ */
+
+let products = [];
+
+let orders = [];
+
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const loginPage =
+    document.getElementById(
+        "loginPage"
+    );
+
+
+const dashboard =
+    document.getElementById(
+        "dashboard"
+    );
+
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const productForm =
+    document.getElementById(
+        "productForm"
+    );
+
+
+const productImageFile =
+    document.getElementById(
+        "productImageFile"
+    );
+
+
+const imagePreview =
+    document.getElementById(
+        "imagePreview"
+    );
+
+
+const imagePreviewWrapper =
+    document.getElementById(
+        "imagePreviewWrapper"
+    );
+
+
+
+/* ============================================================
+   PAGE LOAD
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+
+        loginForm.addEventListener(
+            "submit",
+            ownerLogin
+        );
+
+
+        productForm.addEventListener(
+            "submit",
+            saveProduct
+        );
+
+
+        productImageFile.addEventListener(
+            "change",
+            previewSelectedImage
+        );
+
+
+        document
+            .getElementById(
+                "productSearch"
+            )
+            .addEventListener(
+                "input",
+                renderProducts
+            );
+
+
+        await checkSession();
+
+    }
+);
+
+
+
+/* ============================================================
+   CHECK SESSION
+============================================================ */
+
+async function checkSession() {
+
+    try {
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (
+            data &&
+            data.session
+        ) {
+
+            await showDashboard();
+
+        } else {
+
+            showLogin();
+
+        }
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Session error:",
+            error
+        );
+
+
+        showLogin();
+
+    }
+
+}
+
+
+
+/* ============================================================
+   LOGIN
+============================================================ */
+
+async function ownerLogin(event) {
+
+    event.preventDefault();
+
+
+    const email =
+        document
+            .getElementById(
+                "loginEmail"
+            )
+            .value
+            .trim();
+
+
+    const password =
+        document
+            .getElementById(
+                "loginPassword"
+            )
+            .value;
+
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+
+    try {
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Logging in...";
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signInWithPassword({
+                    email,
+                    password
+                });
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (
+            !data ||
+            !data.user
+        ) {
+
+            throw new Error(
+                "Login failed."
+            );
+
+        }
+
+
+        await showDashboard();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Login error:",
+            error
+        );
+
+
+        showLoginMessage(
+            error.message ||
+            "Login failed."
+        );
+
+
+    } finally {
+
+
+        button.disabled = false;
+
+        button.textContent =
+            "Login";
+
+    }
+
+}
+
+
+
+/* ============================================================
+   SHOW LOGIN
+============================================================ */
+
+function showLogin() {
+
+    loginPage.style.display =
+        "flex";
+
+    dashboard.style.display =
+        "none";
+
+}
+
+
+
+/* ============================================================
+   SHOW DASHBOARD
+============================================================ */
+
+async function showDashboard() {
+
+    loginPage.style.display =
+        "none";
+
+    dashboard.style.display =
+        "block";
+
+
+    await loadProducts();
+
+    await loadOrders();
+
+}
+
+
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+async function logoutOwner() {
+
+    await supabaseClient
+        .auth
+        .signOut();
+
+
+    showLogin();
+
+}
+
+
+
+/* ============================================================
+   LOAD PRODUCTS
+============================================================ */
+
+async function loadProducts() {
+
+    const container =
+        document.getElementById(
+            "productsList"
+        );
+
+
+    container.innerHTML =
+        `
+        <div class="empty">
+            Loading products...
+        </div>
+        `;
+
+
+    try {
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        products =
+            data || [];
+
+
+        renderProducts();
+
+        updateStats();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Load products error:",
+            error
+        );
+
+
+        container.innerHTML =
+            `
+            <div class="empty">
+
+                Could not load products.
+
+                <br><br>
+
+                ${escapeHtml(
+                    error.message ||
+                    "Unknown error"
+                )}
+
+            </div>
+            `;
+
+    }
+
+}
+
+
+
+/* ============================================================
+   RENDER PRODUCTS
+============================================================ */
+
+function renderProducts() {
+
+    const container =
+        document.getElementById(
+            "productsList"
+        );
+
+
+    const search =
+        document
+            .getElementById(
+                "productSearch"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        products.filter(
+            product => {
+
+
+                const name =
+                    String(
+                        product.name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                const malayalam =
+                    String(
+                        product.malayalam_name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                const category =
+                    String(
+                        product.category ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                return (
+
+                    name.includes(
+                        search
+                    )
+
+                    ||
+
+                    malayalam.includes(
+                        search
+                    )
+
+                    ||
+
+                    category.includes(
+                        search
+                    )
+
+                );
+
+            }
+        );
+
+
+    if (!filtered.length) {
+
+        container.innerHTML =
+            `
+            <div class="empty">
+                No products found.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        filtered
+            .map(
+                product =>
+                    createProductCard(
+                        product
+                    )
+            )
+            .join("");
+
+}
+
+
+
+/* ============================================================
+   PRODUCT CARD
+============================================================ */
+
+function createProductCard(
+    product
+) {
+
+
+    const image =
+        product.image_url ||
+        getFallbackImage(
+            product.category
+        );
+
+
+    const available =
+        product.available !== false;
+
+
+    return `
+
+        <div class="product-card">
+
+
+            <img
+                class="product-image"
+                src="${escapeAttribute(
+                    image
+                )}"
+                alt="${escapeAttribute(
+                    product.name ||
+                    "Product"
+                )}"
+                onerror="this.src='${escapeAttribute(
+                    getFallbackImage(
+                        product.category
+                    )
+                )}'"
+            >
+
+
+            <div class="product-info">
+
+
+                <div class="product-name">
+
+                    ${escapeHtml(
+                        product.name ||
+                        "Unnamed Product"
+                    )}
+
+                </div>
+
+
+                <div class="product-malayalam">
+
+                    ${escapeHtml(
+                        product.malayalam_name ||
+                        ""
+                    )}
+
+                </div>
+
+
+                <div class="product-meta">
+
+                    Category:
+                    ${escapeHtml(
+                        product.category ||
+                        "-"
+                    )}
+
+                    <br>
+
+                    Unit:
+                    ${escapeHtml(
+                        product.unit_type ||
+                        "-"
+                    )}
+
+                </div>
+
+
+                <span
+                    class="status ${
+                        available
+                        ? "available"
+                        : "unavailable"
+                    }"
+                >
+
+                    ${
+                        available
+                        ? "Available"
+                        : "Disabled"
+                    }
+
+                </span>
+
+
+                <div class="product-actions">
+
+
+                    <button
+                        class="edit-btn"
+                        onclick="editProduct('${escapeAttribute(
+                            String(
+                                product.id
+                            )
+                        )}')"
+                    >
+                        Edit / Change Image
+                    </button>
+
+
+                    <button
+                        class="toggle-btn"
+                        onclick="toggleProduct(
+                            '${escapeAttribute(
+                                String(
+                                    product.id
+                                )
+                            )}',
+                            ${available}
+                        )"
+                    >
+
+                        ${
+                            available
+                            ? "Disable"
+                            : "Enable"
+                        }
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* ============================================================
+   EDIT PRODUCT
+============================================================ */
+
+function editProduct(
+    productId
+) {
+
+
+    const product =
+        products.find(
+            item =>
+                String(item.id) ===
+                String(productId)
+        );
+
+
+    if (!product) {
+
+        alert(
+            "Product not found."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "editingProductId"
+        )
+        .value =
+        product.id;
+
+
+    document
+        .getElementById(
+            "productName"
+        )
+        .value =
+        product.name || "";
+
+
+    document
+        .getElementById(
+            "productMalayalam"
+        )
+        .value =
+        product.malayalam_name ||
+        "";
+
+
+    document
+        .getElementById(
+            "productCategory"
+        )
+        .value =
+        product.category ||
+        "";
+
+
+    document
+        .getElementById(
+            "productUnit"
+        )
+        .value =
+        product.unit_type ||
+        "";
+
+
+    productImageFile.value =
+        "";
+
+
+    if (product.image_url) {
+
+
+        imagePreview.src =
+            product.image_url;
+
+
+        imagePreviewWrapper
+            .classList
+            .add("show");
+
+
+        document
+            .getElementById(
+                "currentImageText"
+            )
+            .textContent =
+            "Current image. Choose a new image to replace it.";
+
+
+    } else {
+
+
+        imagePreviewWrapper
+            .classList
+            .remove("show");
+
+    }
+
+
+    document
+        .getElementById(
+            "productFormTitle"
+        )
+        .textContent =
+        "Edit Product";
+
+
+    document
+        .getElementById(
+            "saveProductButton"
+        )
+        .textContent =
+        "Save Changes";
+
+
+    document
+        .getElementById(
+            "cancelEditButton"
+        )
+        .style
+        .display =
+        "block";
+
+
+    window.scrollTo({
+
+        top:
+            document
+                .getElementById(
+                    "productForm"
+                )
+                .getBoundingClientRect()
+                .top +
+            window.scrollY -
+            90,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+
+/* ============================================================
+   IMAGE PREVIEW
+============================================================ */
+
+function previewSelectedImage() {
+
+
+    const file =
+        productImageFile.files[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    const allowedTypes = [
+
+        "image/jpeg",
+
+        "image/png",
+
+        "image/webp"
+
+    ];
+
+
+    if (
+        !allowedTypes.includes(
+            file.type
+        )
+    ) {
+
+
+        alert(
+            "Please select JPG, PNG or WEBP."
+        );
+
+
+        productImageFile.value =
+            "";
+
+
+        return;
+
+    }
+
+
+    if (
+        file.size >
+        5 * 1024 * 1024
+    ) {
+
+
+        alert(
+            "Image must be smaller than 5MB."
+        );
+
+
+        productImageFile.value =
+            "";
+
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(event) {
+
+
+            imagePreview.src =
+                event.target.result;
+
+
+            imagePreviewWrapper
+                .classList
+                .add("show");
+
+
+            document
+                .getElementById(
+                    "currentImageText"
+                )
+                .textContent =
+                "New image selected.";
+
+        };
+
+
+    reader.readAsDataURL(
+        file
+    );
+
+}
+
+
+
+/* ============================================================
+   UPLOAD IMAGE
+============================================================ */
+
+async function uploadImage(
+    file
+) {
+
+
+    if (!file) {
+        return null;
+    }
+
+
+    const extension =
+        file.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    const fileName =
+        "product-" +
+        Date.now() +
+        "-" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9) +
+        "." +
+        extension;
+
+
+    console.log(
+        "Uploading:",
+        fileName
+    );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .storage
+            .from(
+                STORAGE_BUCKET
+            )
+            .upload(
+                fileName,
+                file,
+                {
+
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false,
+
+                    contentType:
+                        file.type
+
+                }
+            );
+
+
+    if (error) {
+
+
+        console.error(
+            "Storage upload error:",
+            error
+        );
+
+
+        throw new Error(
+            "Image upload failed: " +
+            error.message
+        );
+
+    }
+
+
+    const {
+        data: publicData
+    } =
+        supabaseClient
+            .storage
+            .from(
+                STORAGE_BUCKET
+            )
+            .getPublicUrl(
+                data.path
+            );
+
+
+    if (
+        !publicData ||
+        !publicData.publicUrl
+    ) {
+
+
+        throw new Error(
+            "Could not create image URL."
+        );
+
+    }
+
+
+    return publicData.publicUrl;
+
+}
+
+
+
+/* ============================================================
+   SAVE PRODUCT
+============================================================ */
+
+async function saveProduct(
+    event
+) {
+
+
+    event.preventDefault();
+
+
+    const productId =
+        document
+            .getElementById(
+                "editingProductId"
+            )
+            .value
+            .trim();
+
+
+    const name =
+        document
+            .getElementById(
+                "productName"
+            )
+            .value
+            .trim();
+
+
+    const malayalam =
+        document
+            .getElementById(
+                "productMalayalam"
+            )
+            .value
+            .trim();
+
+
+    const category =
+        document
+            .getElementById(
+                "productCategory"
+            )
+            .value;
+
+
+    const unit =
+        document
+            .getElementById(
+                "productUnit"
+            )
+            .value
+            .trim();
+
+
+    const imageFile =
+        document
+            .getElementById(
+                "productImageFile"
+            )
+            .files[0];
+
+
+    const button =
+        document
+            .getElementById(
+                "saveProductButton"
+            );
+
+
+    /* ======================================================
+       VALIDATION
+    ====================================================== */
+
+
+    if (!name) {
+
+        alert(
+            "Please enter the product name."
+        );
+
+        return;
+
+    }
+
+
+    if (!category) {
+
+        alert(
+            "Please select a category."
+        );
+
+        return;
+
+    }
+
+
+
+    try {
+
+
+        button.disabled = true;
+
+
+        /* ==================================================
+           EDIT EXISTING PRODUCT
+        ================================================== */
+
+
+        if (productId) {
+
+
+            const existingProduct =
+                products.find(
+                    product =>
+                        String(
+                            product.id
+                        ) ===
+                        String(
+                            productId
+                        )
+                );
+
+
+            if (!existingProduct) {
+
+                throw new Error(
+                    "Product not found."
+                );
+
+            }
+
+
+            /*
+             * Keep old image
+             * unless a new image is selected.
+             */
+
+            let imageURL =
+                existingProduct.image_url ||
+                null;
+
+
+
+            /* ----------------------------------------------
+               UPLOAD NEW IMAGE
+            ---------------------------------------------- */
+
+
+            if (imageFile) {
+
+
+                button.textContent =
+                    "Uploading image...";
+
+
+                imageURL =
+                    await uploadImage(
+                        imageFile
+                    );
+
+            }
+
+
+            button.textContent =
+                "Saving changes...";
+
+
+
+            /*
+             * IMPORTANT:
+             *
+             * There is NO PRICE here.
+             *
+             * Your products table does not
+             * contain a price column.
+             */
+
+
+            const updateData = {
+
+                name:
+                    name,
+
+                malayalam_name:
+                    malayalam,
+
+                category:
+                    category,
+
+                unit_type:
+                    unit,
+
+                image_url:
+                    imageURL
+
+            };
+
+
+            console.log(
+                "Updating product:",
+                productId
+            );
+
+
+            console.log(
+                "Data:",
+                updateData
+            );
+
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "products"
+                    )
+                    .update(
+                        updateData
+                    )
+                    .eq(
+                        "id",
+                        productId
+                    )
+                    .select();
+
+
+
+            if (error) {
+
+
+                console.error(
+                    "Supabase update error:",
+                    error
+                );
+
+
+                console.error(
+                    "Message:",
+                    error.message
+                );
+
+
+                console.error(
+                    "Details:",
+                    error.details
+                );
+
+
+                console.error(
+                    "Hint:",
+                    error.hint
+                );
+
+
+                console.error(
+                    "Code:",
+                    error.code
+                );
+
+
+                throw error;
+
+            }
+
+
+
+            console.log(
+                "Updated:",
+                data
+            );
+
+
+            showMessage(
+                "Product updated successfully!",
+                true
+            );
+
+
+            resetProductForm();
+
+
+            await loadProducts();
+
+
+            return;
+
+        }
+
+
+
+        /* ==================================================
+           ADD NEW PRODUCT
+        ================================================== */
+
+
+        let imageURL =
+            null;
+
+
+        if (imageFile) {
+
+
+            button.textContent =
+                "Uploading image...";
+
+
+            imageURL =
+                await uploadImage(
+                    imageFile
+                );
+
+        }
+
+
+        button.textContent =
+            "Adding product...";
+
+
+        const newProduct = {
+
+
+            name:
+                name,
+
+
+            malayalam_name:
+                malayalam,
+
+
+            category:
+                category,
+
+
+            unit_type:
+                unit,
+
+
+            image_url:
+                imageURL,
+
+
+            available:
+                true
+
+        };
+
+
+        console.log(
+            "New product:",
+            newProduct
+        );
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "products"
+                )
+                .insert([
+                    newProduct
+                ])
+                .select();
+
+
+        if (error) {
+
+            console.error(
+                "Supabase insert error:",
+                error
+            );
+
+            throw error;
+
+        }
+
+
+        console.log(
+            "Added:",
+            data
+        );
+
+
+        showMessage(
+            "Product added successfully!",
+            true
+        );
+
+
+        resetProductForm();
+
+
+        await loadProducts();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Save product error:",
+            error
+        );
+
+
+        let message =
+            error.message ||
+            "Could not save product.";
+
+
+        if (error.details) {
+
+            message +=
+                "\n" +
+                error.details;
+
+        }
+
+
+        if (error.hint) {
+
+            message +=
+                "\n" +
+                error.hint;
+
+        }
+
+
+        showMessage(
+            message,
+            false
+        );
+
+
+        alert(
+            "Save failed:\n\n" +
+            message
+        );
+
+
+    } finally {
+
+
+        button.disabled =
+            false;
+
+
+        const editingId =
+            document
+                .getElementById(
+                    "editingProductId"
+                )
+                .value;
+
+
+        button.textContent =
+            editingId
+            ? "Save Changes"
+            : "Add Product";
+
+    }
+
+}
+
+
+
+/* ============================================================
+   RESET FORM
+============================================================ */
+
+function resetProductForm() {
+
+
+    productForm.reset();
+
+
+    document
+        .getElementById(
+            "editingProductId"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "productFormTitle"
+        )
+        .textContent =
+        "Add Product";
+
+
+    document
+        .getElementById(
+            "saveProductButton"
+        )
+        .textContent =
+        "Add Product";
+
+
+    document
+        .getElementById(
+            "cancelEditButton"
+        )
+        .style
+        .display =
+        "none";
+
+
+    imagePreviewWrapper
+        .classList
+        .remove("show");
+
+
+    imagePreview.src =
+        "";
+
+
+    productImageFile.value =
+        "";
+
+}
+
+
+
+/* ============================================================
+   ENABLE / DISABLE
+============================================================ */
+
+async function toggleProduct(
+    productId,
+    currentAvailable
+) {
+
+
+    const newAvailable =
+        !currentAvailable;
+
+
+    try {
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "products"
+                )
+                .update({
+
+                    available:
+                        newAvailable
+
+                })
+                .eq(
+                    "id",
+                    productId
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        showMessage(
+
+            newAvailable
+            ? "Product enabled."
+            : "Product disabled.",
+
+            true
+
+        );
+
+
+        await loadProducts();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Toggle error:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "Could not update product.",
+            false
+        );
+
+    }
+
+}
+
+
+
+/* ============================================================
+   LOAD ORDERS
+============================================================ */
+
+async function loadOrders() {
+
+
+    const container =
+        document.getElementById(
+            "ordersList"
+        );
+
+
+    container.innerHTML =
+        `
+        <div class="empty">
+            Loading orders...
+        </div>
+        `;
+
+
+    try {
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "orders"
+                )
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        orders =
+            data || [];
+
+
+        renderOrders();
+
+
+        updateStats();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Orders error:",
+            error
+        );
+
+
+        container.innerHTML =
+            `
+            <div class="empty">
+
+                Could not load orders.
+
+                <br><br>
+
+                ${escapeHtml(
+                    error.message ||
+                    "Unknown error"
+                )}
+
+            </div>
+            `;
+
+    }
+
+}
+
+
+
+/* ============================================================
+   RENDER ORDERS
+============================================================ */
+
+function renderOrders() {
+
+
+    const container =
+        document.getElementById(
+            "ordersList"
+        );
+
+
+    if (!orders.length) {
+
+
+        container.innerHTML =
+            `
+            <div class="empty">
+                No orders yet.
+            </div>
+            `;
+
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        orders
+            .map(
+                order =>
+                    createOrderCard(
+                        order
+                    )
+            )
+            .join("");
+
+}
+
+
+
+/* ============================================================
+   ORDER CARD
+============================================================ */
+
+function createOrderCard(
+    order
+) {
+
+
+    let items = [];
+
+
+    try {
+
+
+        if (
+            Array.isArray(
+                order.items
+            )
+        ) {
+
+            items =
+                order.items;
+
+        }
+
+        else if (
+            typeof order.items ===
+            "string"
+        ) {
+
+            items =
+                JSON.parse(
+                    order.items
+                );
+
+        }
+
+
+    } catch (error) {
+
+        items = [];
+
+    }
+
+
+
+    const itemsHTML =
+        items.length
+
+        ?
+
+        `
+        <ul class="order-items">
+
+            ${
+                items
+                    .map(
+                        item => `
+
+                            <li>
+
+                                ${escapeHtml(
+                                    item.name ||
+                                    item.product_name ||
+                                    "Product"
+                                )}
+
+                                ${
+                                    item.quantity
+                                    ?
+                                    " × " +
+                                    escapeHtml(
+                                        String(
+                                            item.quantity
+                                        )
+                                    )
+                                    :
+                                    ""
+                                }
+
+                            </li>
+
+                        `
+                    )
+                    .join("")
+            }
+
+        </ul>
+        `
+
+        :
+
+        "<div>No item details</div>";
+
+
+
+    const status =
+        order.status ||
+        "Preparing";
+
+
+
+    return `
+
+        <div class="order-card">
+
+
+            <div class="order-top">
+
+
+                <div>
+
+                    <div class="order-number">
+
+                        Order #
+
+                        ${escapeHtml(
+                            String(
+                                order.order_number ||
+                                order.id ||
+                                ""
+                            )
+                        )}
+
+                    </div>
+
+
+                    <div class="order-date">
+
+                        ${formatDate(
+                            order.created_at
+                        )}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="order-details">
+
+
+                <strong>
+                    Customer:
+                </strong>
+
+                ${escapeHtml(
+                    order.customer_name ||
+                    "-"
+                )}
+
+                <br>
+
+
+                <strong>
+                    Phone:
+                </strong>
+
+                ${escapeHtml(
+                    order.customer_phone ||
+                    "-"
+                )}
+
+                <br>
+
+
+                <strong>
+                    Pickup date:
+                </strong>
+
+                ${escapeHtml(
+                    order.pickup_date ||
+                    "-"
+                )}
+
+                <br>
+
+
+                <strong>
+                    Pickup time:
+                </strong>
+
+                ${escapeHtml(
+                    order.pickup_time ||
+                    "-"
+                )}
+
+
+                <br>
+
+
+                <strong>
+                    Items:
+                </strong>
+
+
+                ${itemsHTML}
+
+
+            </div>
+
+
+
+            <div class="order-bottom">
+
+
+                <strong>
+                    Status
+                </strong>
+
+
+                <select
+                    class="order-status-select"
+                    onchange="changeOrderStatus(
+                        '${escapeAttribute(
+                            String(
+                                order.id
+                            )
+                        )}',
+                        this.value
+                    )"
+                >
+
+
+                    <option
+                        value="Preparing"
+                        ${
+                            status ===
+                            "Preparing"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        Preparing
+                    </option>
+
+
+                    <option
+                        value="Ready"
+                        ${
+                            status ===
+                            "Ready"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        Ready
+                    </option>
+
+
+                    <option
+                        value="Completed"
+                        ${
+                            status ===
+                            "Completed"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        Completed
+                    </option>
+
+
+                    <option
+                        value="Cancelled"
+                        ${
+                            status ===
+                            "Cancelled"
+                            ? "selected"
+                            : ""
+                        }
+                    >
+                        Cancelled
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* ============================================================
+   CHANGE ORDER STATUS
+============================================================ */
+
+async function changeOrderStatus(
+    orderId,
+    status
+) {
+
+
+    try {
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "orders"
+                )
+                .update({
+
+                    status:
+                        status
+
+                })
+                .eq(
+                    "id",
+                    orderId
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        showMessage(
+            "Order status updated.",
+            true
+        );
+
+
+        await loadOrders();
+
+
+    } catch (error) {
+
+
+        console.error(
+            "Order status error:",
+            error
+        );
+
+
+        showMessage(
+            error.message ||
+            "Could not update order.",
+            false
+        );
+
+    }
+
+}
+
+
+
+/* ============================================================
+   UPDATE STATS
+============================================================ */
+
+function updateStats() {
+
+
+    const totalProducts =
+        products.length;
+
+
+    const availableProducts =
+        products.filter(
+            product =>
+                product.available !== false
+        ).length;
+
+
+    const totalOrders =
+        orders.length;
+
+
+    const preparingOrders =
+        orders.filter(
+            order =>
+                (
+                    order.status ||
+                    "Preparing"
+                ) ===
+                "Preparing"
+        ).length;
+
+
+
+    document
+        .getElementById(
+            "totalProducts"
+        )
+        .textContent =
+        totalProducts;
+
+
+    document
+        .getElementById(
+            "availableProducts"
+        )
+        .textContent =
+        availableProducts;
+
+
+    document
+        .getElementById(
+            "totalOrders"
+        )
+        .textContent =
+        totalOrders;
+
+
+    document
+        .getElementById(
+            "preparingOrders"
+        )
+        .textContent =
+        preparingOrders;
+
+}
+
+
+
+/* ============================================================
+   FALLBACK IMAGE
+============================================================ */
+
+function getFallbackImage(
+    category
+) {
+
+    return (
+        "https://images.unsplash.com/" +
+        "photo-1542838132-92c53300491e" +
+        "?auto=format&fit=crop&w=600&q=80"
+    );
+
+}
+
+
+
+/* ============================================================
+   DASHBOARD MESSAGE
+============================================================ */
+
+function showMessage(
+    message,
+    success
+) {
+
+
+    const element =
+        document.getElementById(
+            "dashboardMessage"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "message show " +
+        (
+            success
+            ? "success"
+            : "error"
+        );
+
+
+    setTimeout(
+        function() {
+
+            element.classList.remove(
+                "show"
+            );
+
+        },
+        5000
+    );
+
+}
+
+
+
+/* ============================================================
+   LOGIN MESSAGE
+============================================================ */
+
+function showLoginMessage(
+    message
+) {
+
+
+    const element =
+        document.getElementById(
+            "loginMessage"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "message show error";
+
+}
+
+
+
+/* ============================================================
+   DATE
+============================================================ */
+
+function formatDate(
+    value
+) {
+
+
+    if (!value) {
+        return "";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return String(value);
+
+    }
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+
+            dateStyle:
+                "medium",
+
+            timeStyle:
+                "short"
+
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   ESCAPE HTML
+============================================================ */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* ============================================================
+   ESCAPE ATTRIBUTE
+============================================================ */
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHtml(
+        value
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>

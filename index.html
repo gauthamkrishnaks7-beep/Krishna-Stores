@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Stores | Pre-Book & Pickup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="brand">
+        <div class="brand-icon">KS</div>
+        <div>
+            <h1>Krishna Stores</h1>
+            <p>കൃഷ്ണ സ്റ്റോർസ്</p>
+        </div>
+    </div>
+
+    <button type="button" class="cart-button" onclick="openCart()">
+        🛒 Cart / കാർട്ട്
+        <span id="cartCount">0</span>
+    </button>
+</header>
+
+
+<main>
+
+    <!-- HOME -->
+    <section class="hero">
+        <div>
+            <h2>Pre-Book Your Items</h2>
+            <h3>നിങ്ങളുടെ സാധനങ്ങൾ മുൻകൂട്ടി ബുക്ക് ചെയ്യൂ</h3>
+
+            <p>
+                Order before you arrive and collect your items from
+                Krishna Stores.
+            </p>
+
+            <p>
+                കടയിൽ എത്തുന്നതിന് മുമ്പ് സാധനങ്ങൾ ബുക്ക് ചെയ്ത്
+                കടയിൽ നിന്ന് തന്നെ വാങ്ങാം.
+            </p>
+
+            <button type="button" class="primary-btn" onclick="scrollToProducts()">
+                Start Shopping / ഷോപ്പിംഗ് ആരംഭിക്കുക
+            </button>
+        </div>
+    </section>
+
+
+    <!-- CATEGORIES -->
+    <section class="section">
+        <h2>Choose Category / വിഭാഗം തിരഞ്ഞെടുക്കുക</h2>
+
+        <div class="category-grid">
+
+            <button type="button"
+                    class="category-card"
+                    onclick="filterCategory('Vegetables')">
+                🥕
+                <strong>Vegetables</strong>
+                <span>പച്ചക്കറികൾ</span>
+            </button>
+
+            <button type="button"
+                    class="category-card"
+                    onclick="filterCategory('Grocery')">
+                🛍️
+                <strong>Grocery</strong>
+                <span>പലചരക്ക്</span>
+            </button>
+
+            <button type="button"
+                    class="category-card"
+                    onclick="filterCategory('Stationery')">
+                ✏️
+                <strong>Stationery</strong>
+                <span>സ്റ്റേഷനറി</span>
+            </button>
+
+            <button type="button"
+                    class="category-card"
+                    onclick="filterCategory('all')">
+                📦
+                <strong>All Products</strong>
+                <span>എല്ലാ സാധനങ്ങളും</span>
+            </button>
+
+        </div>
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section id="productsSection" class="section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Products / സാധനങ്ങൾ</h2>
+                <p>Select the items you want to pre-book.</p>
+                <p>നിങ്ങൾക്ക് ആവശ്യമുള്ള സാധനങ്ങൾ തിരഞ്ഞെടുക്കുക.</p>
+            </div>
+
+            <input
+                id="productSearch"
+                class="search-input"
+                type="search"
+                placeholder="Search / തിരയുക..."
+                oninput="searchProducts(this.value)"
+            >
+        </div>
+
+
+        <div id="categoryFilters" class="filter-row">
+            <button type="button" onclick="filterCategory('all')" class="filter-btn active">
+                All / എല്ലാം
+            </button>
+
+            <button type="button" onclick="filterCategory('Vegetables')" class="filter-btn">
+                Vegetables / പച്ചക്കറി
+            </button>
+
+            <button type="button" onclick="filterCategory('Grocery')" class="filter-btn">
+                Grocery / പലചരക്ക്
+            </button>
+
+            <button type="button" onclick="filterCategory('Stationery')" class="filter-btn">
+                Stationery / സ്റ്റേഷനറി
+            </button>
+        </div>
+
+
+        <div id="loadingProducts" class="loading">
+            Loading products... / സാധനങ്ങൾ ലോഡ് ചെയ്യുന്നു...
+        </div>
+
+        <div id="productError" class="error-box hidden"></div>
+
+        <div id="productsGrid" class="products-grid"></div>
+
+    </section>
+
+
+    <!-- CART -->
+    <section id="cartSection" class="section cart-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Cart / കാർട്ട്</h2>
+                <p>Your selected items / നിങ്ങൾ തിരഞ്ഞെടുത്ത സാധനങ്ങൾ</p>
+            </div>
+        </div>
+
+        <div id="cartItems"></div>
+
+        <div id="emptyCart" class="empty-box">
+            <h3>Your cart is empty</h3>
+            <p>നിങ്ങളുടെ കാർട്ട് കാലിയാണ്.</p>
+        </div>
+
+        <div id="cartSummary" class="cart-summary hidden">
+            <div>
+                <strong>Items / സാധനങ്ങൾ</strong>
+                <span id="cartTotalItems">0</span>
+            </div>
+
+            <div>
+                <strong>Total / ആകെ</strong>
+                <span id="cartTotalAmount">₹0</span>
+            </div>
+
+            <button type="button" class="primary-btn" onclick="openCheckout()">
+                Continue / തുടരുക
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- CHECKOUT -->
+    <section id="checkoutSection" class="section checkout-section">
+
+        <h2>Pickup Details / വാങ്ങാനുള്ള വിവരങ്ങൾ</h2>
+
+        <p>
+            Payment at shop only.
+            <br>
+            പണം കടയിൽ വെച്ച് നൽകാം.
+        </p>
+
+        <form id="checkoutForm" onsubmit="placeOrder(event)">
+
+            <label>
+                Name / പേര്
+                <input
+                    id="customerName"
+                    type="text"
+                    required
+                    placeholder="Enter your name / പേര് നൽകുക"
+                >
+            </label>
+
+
+            <label>
+                Phone / ഫോൺ
+                <input
+                    id="customerPhone"
+                    type="tel"
+                    required
+                    pattern="[0-9]{10}"
+                    maxlength="10"
+                    placeholder="10-digit phone number"
+                >
+            </label>
+
+
+            <label>
+                Pickup Date / വാങ്ങുന്ന തീയതി
+                <input
+                    id="pickupDate"
+                    type="date"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Pickup Time / വാങ്ങുന്ന സമയം
+                <select id="pickupTime" required>
+                    <option value="">Select time / സമയം തിരഞ്ഞെടുക്കുക</option>
+                    <option value="09:00 AM">09:00 AM / രാവിലെ 9:00</option>
+                    <option value="10:00 AM">10:00 AM / രാവിലെ 10:00</option>
+                    <option value="11:00 AM">11:00 AM / രാവിലെ 11:00</option>
+                    <option value="12:00 PM">12:00 PM / ഉച്ചയ്ക്ക് 12:00</option>
+                    <option value="01:00 PM">01:00 PM / ഉച്ചയ്ക്ക് 1:00</option>
+                    <option value="02:00 PM">02:00 PM / ഉച്ചയ്ക്ക് 2:00</option>
+                    <option value="03:00 PM">03:00 PM / ഉച്ചയ്ക്ക് 3:00</option>
+                    <option value="04:00 PM">04:00 PM / വൈകിട്ട് 4:00</option>
+                    <option value="05:00 PM">05:00 PM / വൈകിട്ട് 5:00</option>
+                    <option value="06:00 PM">06:00 PM / വൈകിട്ട് 6:00</option>
+                    <option value="07:00 PM">07:00 PM / വൈകിട്ട് 7:00</option>
+                    <option value="08:00 PM">08:00 PM / രാത്രി 8:00</option>
+                </select>
+            </label>
+
+
+            <div class="checkout-note">
+                <strong>Pickup only / കടയിൽ നിന്ന് വാങ്ങൽ മാത്രം</strong>
+                <br>
+                Delivery is not available.
+                <br>
+                ഡെലിവറി ലഭ്യമല്ല.
+            </div>
+
+
+            <button
+                id="placeOrderBtn"
+                type="submit"
+                class="primary-btn full-btn">
+                Confirm Order / ഓർഡർ സ്ഥിരീകരിക്കുക
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- CONFIRMATION -->
+    <section id="confirmationSection" class="section confirmation hidden">
+
+        <div class="success-icon">✓</div>
+
+        <h2>Order Confirmed!</h2>
+        <h3>ഓർഡർ സ്ഥിരീകരിച്ചു!</h3>
+
+        <p>Your order number:</p>
+        <p>നിങ്ങളുടെ ഓർഡർ നമ്പർ:</p>
+
+        <div id="orderNumber" class="order-number"></div>
+
+        <p>
+            Please show this order number when you arrive.
+        </p>
+
+        <p>
+            കടയിൽ എത്തുമ്പോൾ ഈ ഓർഡർ നമ്പർ കാണിക്കുക.
+        </p>
+
+        <button
+            type="button"
+            id="whatsappButton"
+            class="whatsapp-btn"
+            onclick="sendOrderToWhatsApp()">
+            Send Order to WhatsApp / WhatsApp-ലേക്ക് അയക്കുക
+        </button>
+
+        <button
+            type="button"
+            class="secondary-btn"
+            onclick="startNewOrder()">
+            New Order / പുതിയ ഓർഡർ
+        </button>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <strong>Krishna Stores / കൃഷ്ണ സ്റ്റോർസ്</strong>
+    <p>Pre-book and pickup • മുൻകൂട്ടി ബുക്ക് ചെയ്ത് വാങ്ങാം</p>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
